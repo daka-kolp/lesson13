@@ -1,47 +1,43 @@
 package com.example.lesson13
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.lesson13.ui.theme.Lesson13Theme
+import android.widget.Button
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
+import com.example.lesson13.models.CryptCurrency
 
-class MainActivity : ComponentActivity() {
+
+class MainActivity : AppCompatActivity() {
+    private lateinit var viewModel: BitcoinViewModel
+    private lateinit var textView: TextView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            Lesson13Theme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
+        setContentView(R.layout.activity_main)
+        viewModel = ViewModelProvider(this)[BitcoinViewModel::class.java]
+        viewModel.uiHeroesState.observe(this) { onViewUpdate(it) }
+
+        textView = findViewById(R.id.value)
+        val button = findViewById<Button>(R.id.make_request)
+
+        button.setOnClickListener { viewModel.getBitcoin() }
+    }
+
+    private fun onViewUpdate(uiState: BitcoinViewModel.UIBitcoinState) {
+
+        when (uiState) {
+            is BitcoinViewModel.UIBitcoinState.Result -> onValueFetched(uiState.bitcoin)
+            is BitcoinViewModel.UIBitcoinState.Error -> onValueFetchedError(uiState.error)
+            is BitcoinViewModel.UIBitcoinState.Empty -> Unit
+            is BitcoinViewModel.UIBitcoinState.Processing -> Unit
         }
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+    private fun onValueFetched(value: CryptCurrency) {
+        textView.text = value.shortInfo()
+    }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    Lesson13Theme {
-        Greeting("Android")
+    private fun onValueFetchedError(error: String) {
+        textView.text = "Error: $error"
     }
 }
