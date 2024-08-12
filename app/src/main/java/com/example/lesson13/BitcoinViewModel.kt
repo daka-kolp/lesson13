@@ -9,11 +9,9 @@ import com.example.lesson13.network.CryptRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.koin.java.KoinJavaComponent.inject
 
-object BitcoinViewModel : ViewModel() {
+class BitcoinViewModel(private val repository: CryptRepository) : ViewModel() {
     private val _uiBitcoinState = MutableLiveData<UIBitcoinState>(UIBitcoinState.Empty)
-    private val repository: CryptRepository by inject(clazz = CryptRepository::class.java)
     val uiHeroesState: LiveData<UIBitcoinState> = _uiBitcoinState
 
     fun getBitcoin() {

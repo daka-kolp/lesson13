@@ -13,4 +13,9 @@ class CryptApplication : Application() {
             modules(cryptModule)
         }
     }
+
+    companion object {
+        lateinit var instance: CryptApplication
+            private set
+    }
 }

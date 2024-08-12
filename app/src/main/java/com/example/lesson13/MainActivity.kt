@@ -4,17 +4,16 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.example.lesson13.models.CryptCurrency
-
+import org.koin.java.KoinJavaComponent.inject
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var viewModel: BitcoinViewModel
     private lateinit var textView: TextView
+    private val viewModel: BitcoinViewModel by inject(clazz = BitcoinViewModel::class.java)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        viewModel = ViewModelProvider(this)[BitcoinViewModel::class.java]
         viewModel.uiHeroesState.observe(this) { onViewUpdate(it) }
 
         textView = findViewById(R.id.value)
