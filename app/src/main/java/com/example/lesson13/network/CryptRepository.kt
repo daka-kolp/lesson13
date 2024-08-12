@@ -2,9 +2,10 @@ package com.example.lesson13.network
 
 import com.example.lesson13.models.CryptCurrency
 
-class CryptRepository(private val client: ApiClient) {
+class CryptRepository(client: ApiClient) {
+    private val api = client.retrofit.create(CryptInterface::class.java)
+
     suspend fun getBitcoin(): CryptCurrency {
-        val api = client.retrofit.create(CryptInterface::class.java)
         return api.getBitcoin().data
     }
 }

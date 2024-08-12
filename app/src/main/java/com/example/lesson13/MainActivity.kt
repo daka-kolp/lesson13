@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        viewModel.uiHeroesState.observe(this) { onViewUpdate(it) }
+        viewModel.uiBitcoinState.observe(this) { onViewUpdate(it) }
 
         textView = findViewById(R.id.value)
         val button = findViewById<Button>(R.id.make_request)
@@ -23,7 +23,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onViewUpdate(uiState: BitcoinViewModel.UIBitcoinState) {
-
         when (uiState) {
             is BitcoinViewModel.UIBitcoinState.Result -> onValueFetched(uiState.bitcoin)
             is BitcoinViewModel.UIBitcoinState.Error -> onValueFetchedError(uiState.error)
@@ -36,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         textView.text = value.shortInfo()
     }
 
-    private fun onValueFetchedError(error: String) {
-        textView.text = "Error: $error"
+    private fun onValueFetchedError(error: Exception) {
+        textView.text = "Error: ${error.localizedMessage ?: error.toString()}"
     }
 }

@@ -1,10 +1,7 @@
 package com.example.lesson13.models
 
 data class CryptCurrency (
-    val id: String,
-    val symbol: String,
     val currencySymbol: String,
-    val type: String,
     val rateUsd: String
 ) {
     fun shortInfo() :String {

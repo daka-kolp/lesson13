@@ -6,28 +6,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.lesson13.models.CryptCurrency
 import com.example.lesson13.network.CryptRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class BitcoinViewModel(private val repository: CryptRepository) : ViewModel() {
     private val _uiBitcoinState = MutableLiveData<UIBitcoinState>(UIBitcoinState.Empty)
-    val uiHeroesState: LiveData<UIBitcoinState> = _uiBitcoinState
+    val uiBitcoinState: LiveData<UIBitcoinState> = _uiBitcoinState
 
     fun getBitcoin() {
-        _uiBitcoinState.value = UIBitcoinState.Processing
+        _uiBitcoinState.postValue(UIBitcoinState.Processing)
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                var value: UIBitcoinState = UIBitcoinState.Processing
-                _uiBitcoinState.postValue(value)
-                try {
-                    val result = repository.getBitcoin()
-                    value = UIBitcoinState.Result(result)
-                } catch (e: Exception) {
-                    value = UIBitcoinState.Error(e.localizedMessage ?: e.toString())
-                } finally {
-                    _uiBitcoinState.postValue(value)
-                }
+            try {
+                val result = repository.getBitcoin()
+                _uiBitcoinState.postValue(UIBitcoinState.Result(result))
+            } catch (e: Exception) {
+                _uiBitcoinState.postValue(UIBitcoinState.Error(e))
             }
         }
     }
@@ -36,6 +28,6 @@ class BitcoinViewModel(private val repository: CryptRepository) : ViewModel() {
         data object Empty : UIBitcoinState()
         data object Processing : UIBitcoinState()
         class Result(val bitcoin: CryptCurrency) : UIBitcoinState()
-        class Error(val error: String) : UIBitcoinState()
+        class Error(val error: Exception) : UIBitcoinState()
     }
 }
