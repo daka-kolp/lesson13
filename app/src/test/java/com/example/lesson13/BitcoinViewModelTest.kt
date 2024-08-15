@@ -52,5 +52,8 @@ class BitcoinViewModelTest {
             Mockito.`when`(repo.getBitcoin()).thenThrow(error)
         }
         viewModel.getBitcoin()
+        Assert.assertEquals(BitcoinViewModel.UIBitcoinState.Empty, events[0])
+        Assert.assertEquals(BitcoinViewModel.UIBitcoinState.Processing, events[1])
+        Assert.assertEquals(BitcoinViewModel.UIBitcoinState.Error(Exception("Test Error")), events[2])
     }
 }
